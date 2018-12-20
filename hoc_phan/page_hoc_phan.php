@@ -1,7 +1,15 @@
+<?php 
+    require_once 'sign_utils.php';
+    // require_once  'Check_Login.php';
+    if (!isSigned()) {
+        header('location: ./');
+        die();
+    }
+?>
+
 <?php
-	ob_start();
-	session_start();
-	require_once   'DBConnectionUtil.php'; 
+    require_once   'DBConnectionUtil.php'; 
+    require_once 'sign_utils.php'
 	// require_once  'Check_Login.php';
 ?>
 <!doctype html>
@@ -43,7 +51,7 @@
 <div class="sidebar" data-background-color="black" data-active-color="danger">
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a href="xem_lich_phong_may.php" class="simple-text"><?php echo $_SESSION['userInfo']['username']?></a>
+                <a href="xem_lich_phong_may.php" class="simple-text"><?php echo $_SESSION[USER]?></a>
             </div>
             <ul class="nav">
 				<?php
@@ -80,7 +88,7 @@
 		<nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="xem_lich_phong_may.php">Phòng máy</a>
+                    <a class="navbar-brand" href="page_lop_hp.php">Lớp học phần</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -97,9 +105,7 @@
                                 <input type = "text" name = "keyword" placeholder = "enter your text">
                                 <input type = "submit" value ="search">
                                 <select name = "field">
-                                    <option value = "ten_phong">Tên phòng</option> 
-                                    <option value = "so_may">Số máy</option>
-                                    <option value = "ghi_chu">Ghi chú</option>
+                                    <option value = "ten_hp">Tên học phần</option> 
                                 </select>
                             </form>
                         </li>
@@ -108,15 +114,13 @@
             </div>
         </nav>
         
-        <a href="them_phong_may.php" class="addtop"><img src="templates/admin//assets/img/add.png" alt="" /> Thêm Phòng máy</a>
+        <a href="them_hp.php" class="addtop"><img src="templates/admin//assets/img/add.png" alt="" /> Thêm Học phần</a>
 
         <div class="content">
         <table class="table table-striped">
                                     <thead>
                                         <th>ID</th>
-                                    	<th>Tên phòng</th>
-                                    	<th>Số máy</th>
-                                        <th>Ghi chú</th>
+                                    	<th>Tên học phần</th>
                                         <th>Sửa</th>
                                         <th>Xóa</th>
                                     </thead>
@@ -125,32 +129,29 @@
                                             if (isset($_GET['keyword'])) {
                                                 $keyword = $_GET['keyword'];
                                                 $field = $_GET['field'];
+                                                echo $keyword." va ".$field;
                                                 $query = 
                                                     "SELECT *
-                                                    FROM phong_may
+                                                    FROM hoc_phan
                                                     WHERE $field like '%{$keyword}%'  
                                                     ORDER BY id";
                                             }
                                             else 
                                                 $query =
                                                     "SELECT *
-                                                    FROM phong_may
+                                                    FROM hoc_phan
                                                     ORDER BY id";;
 										
 										$rs= $mysqli->query($query);
 										while ($item=mysqli_fetch_assoc($rs)){
                                             $id=$item['id'];
-                                            $tp = $item['ten_phong'];
-                                            $sm = $item['so_may'];
-                                            $ghi_chu = $item['ghi_chu'];
+                                            $hp = $item['ten_hp'];
 								        ?>
                                         <tr>
                                         	<td><?php echo $id?></td>
-                                        	<td><?php echo $tp?></td>
-                                            <td><?php echo $sm?></td>
-                                            <td><?php echo $ghi_chu?></td>
-                                            <td><a href="cap_nhat_pm.php?id=<?php echo $id?>">Sửa</a></td>
-                                            <td><a href="xu_ly_xoa_pm.php?id=<?php echo $id?>">Xóa</a></td>
+                                        	<td><?php echo $hp?></td>
+                                            <td><a href="cap_nhat_hp.php?id=<?php echo $id?>">Sửa</a></td>
+                                            <td><a href="xu_ly_xoa_hp.php?id=<?php echo $id?>">Xóa</a></td>
                                         </tr>
                                     <?php }?>
                                     </tbody>

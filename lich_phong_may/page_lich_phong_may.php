@@ -1,15 +1,20 @@
-`<?php
-	ob_start();
-	session_start();
-	require_once   'DBConnectionUtil.php'; 
+
+<?php
+    require_once   '../utils/DBConnectionUtil.php'; 
+    require_once '../utils/sign_utils.php';
+    require_once '../utils/constants.php';
     // require_once  'Check_Login.php';
+    if (!isSigned()) {
+        header('location: ./');
+        die();
+    }
 ?>
 <!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="apple-touch-icon" sizes="76x76" href="templates/admin/assets/img/apple-icon.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="templates/admin/assets/img/favicon.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="../templates/admin/assets/img/apple-icon.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="../templates/admin/assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>Trang Quản Lý</title>
@@ -17,23 +22,23 @@
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
     <!-- Bootstrap core CSS     -->
-    <link href="templates/admin/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../templates/admin/assets/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Animation library for notifications   -->
-    <link href="templates/admin/assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../templates/admin/assets/css/animate.min.css" rel="stylesheet"/>
     <!--  Paper Dashboard core CSS    -->
-    <link href="templates/admin/assets/css/paper-dashboard.css" rel="stylesheet"/>
+    <link href="../templates/admin/assets/css/paper-dashboard.css" rel="stylesheet"/>
     <!--  CSS for Demo Purpose, don't include it in your project     -->
-    <link href="templates/admin/assets/css/demo.css" rel="stylesheet" />
+    <link href="../templates/admin/assets/css/demo.css" rel="stylesheet" />
     <!--  Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
-    <link href="templates/admin/assets/css/themify-icons.css" rel="stylesheet">
-	<script type="text/javascript" src="templates/admin/assets/js/ckeditor/ckeditor.js"></script>
-	<script type="text/javascript" src="templates/admin/assets/js/ckfinder/ckfinder.js"></script>
-	<script type="text/javascript" src="templates/admin/assets/js/jquery-2.1.1.min.js"></script>
-	 <script type="text/javascript" src="templates/admin/assets/js/jquery-3.3.1.min.js"></script> 
-	<script type="text/javascript" src="templates/admin/assets/js/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="templates/admin/assets/js/jquery.validate.min.js"></script>
+    <link href="../templates/admin/assets/css/themify-icons.css" rel="stylesheet">
+	<script type="text/javascript" src="../templates/admin/assets/js/ckeditor/ckeditor.js"></script>
+	<script type="text/javascript" src="../templates/admin/assets/js/ckfinder/ckfinder.js"></script>
+	<script type="text/javascript" src="../templates/admin/assets/js/jquery-2.1.1.min.js"></script>
+	 <script type="text/javascript" src="../templates/admin/assets/js/jquery-3.3.1.min.js"></script> 
+	<script type="text/javascript" src="../templates/admin/assets/js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../templates/admin/assets/js/jquery.validate.min.js"></script>
 
 </head>
 <body>
@@ -43,7 +48,7 @@
 <div class="sidebar" data-background-color="black" data-active-color="danger">
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a href="xem_lich_phong_may.php" class="simple-text"><?php echo $_SESSION['userInfo']['username']?></a>
+                <a href="xem_lich_phong_may.php" class="simple-text"><?php echo $_SESSION[USER]?></a>
             </div>
             <ul class="nav">
 				<?php
@@ -94,10 +99,9 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <form action = "" method = "get">
-                                <input type = "text" name = "keywords" placeholder = "enter your text">
+                                <input type = "text" name = "keyword" placeholder = "enter your text">
                                 <input type = "submit" value ="search">
-                                <select name = "field">
-                                
+                                <select name = "field">                          
                                     <option value = "ten_hp">Lớp học phần</option> 
                                     <option value = "ten_phong">phòng máy</option>
                                     <option value = "tieu_de">Nội dung</option>
@@ -111,7 +115,7 @@
             </div>
         </nav>
         
-        <a href="them_lich.php" class="addtop"><img src="templates/admin//assets/img/add.png" alt="" /> Thêm Lịch</a>
+        <a href="them_lich.php" class="addtop"><img src="../templates/admin//assets/img/add.png" alt="" /> Thêm Lịch</a>
 
         <div class="content">
         <table class="table table-striped">
@@ -129,9 +133,10 @@
                                     </thead>
                                     <tbody class="danhsach">
                                         <?php
-                                             if (isset($_GET['keywords'])) {
-
-                                                $query = 
+                                             if (isset($_GET['keyword'])) {
+                                                $keyword = $_GET['keyword'];
+                                                $field = $_GET['field'];
+                                                  $query = 
                                                     "SELECT lich_phong_may.id, hoc_phan.ten_hp, phong_may.ten_phong, 
                                                         tieu_de, giao_vien.ho_ten, thoi_gian_bat_dau, thoi_gian_ket_thuc, lich_phong_may.ghi_chu
                                                     FROM lich_phong_may 
@@ -144,6 +149,7 @@
                                                     WHERE $field like '%{$keyword}%'
                                                     ORDER BY lich_phong_may.id";
                                             }
+                                               
                                             else 
                                                 $query =
                                                     "SELECT lich_phong_may.id, hoc_phan.ten_hp, phong_may.ten_phong, 

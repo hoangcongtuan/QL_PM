@@ -1,3 +1,10 @@
+<?php 
+    require_once 'sign_utils.php';
+    if (!isSigned()) {
+        header('location: ./');
+        die();
+    }
+?>
 <?php
     require_once 'DBConnectionUtil.php'; 
     $id = $_GET['id'];

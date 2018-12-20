@@ -1,7 +1,15 @@
+<?php 
+    require_once 'sign_utils.php';
+    // require_once  'Check_Login.php';
+    if (!isSigned()) {
+        header('location: ./');
+        die();
+    }
+?>
+
 <?php
-	ob_start();
-	session_start();
-	require_once   'DBConnectionUtil.php'; 
+    require_once   'DBConnectionUtil.php'; 
+    require_once 'sign_utils.php'
 	// require_once  'Check_Login.php';
 ?>
 <!doctype html>
@@ -43,7 +51,7 @@
 <div class="sidebar" data-background-color="black" data-active-color="danger">
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a href="page_giao_vien.php" class="simple-text"><?php echo $_SESSION['userInfo']['username']?></a>
+                <a href="xem_lich_phong_may.php" class="simple-text"><?php echo $_SESSION[USER]?></a>
             </div>
             <ul class="nav">
 				<?php

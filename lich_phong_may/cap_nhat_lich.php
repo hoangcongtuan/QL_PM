@@ -1,5 +1,14 @@
+<?php 
+    require_once '../utils/sign_utils.php';
+    // require_once  'Check_Login.php';
+    if (!isSigned()) {
+        header('location: ./');
+        die();
+    }
+?>
+
 <?php
-    require_once 'DBConnectionUtil.php'; 
+    require_once '../utils/DBConnectionUtil.php'; 
     $id = $_GET['id'];
     $query = 
         "SELECT lich_phong_may.id, hoc_phan.ten_hp, phong_may.ten_phong, lich_phong_may.id_pm, lich_phong_may.id_gv,
@@ -42,7 +51,7 @@
 <html lang="en">
 <head>
 <title>Cập nhật Nhân viên</title>
-<link rel="stylesheet" href="./css/login.css">
+<link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
 <form action="xu_ly_cap_nhat_lich.php" method="post">

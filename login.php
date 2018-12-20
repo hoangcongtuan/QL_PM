@@ -1,3 +1,11 @@
+<?php 
+include_once "./utils/sign_utils.php";
+    if (isSigned()) {
+        header("location: ./lich_phong_may/page_lich_phong_may.php");
+        die();
+    }
+?>
+
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="./css/login.css">

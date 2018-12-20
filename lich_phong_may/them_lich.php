@@ -1,5 +1,14 @@
+<?php 
+    require_once '../utils/sign_utils.php';
+    // require_once  'Check_Login.php';
+    if (!isSigned()) {
+        header('location: ./');
+        die();
+    }
+?>
+
 <?php
-    require_once 'DBConnectionUtil.php'; 
+    require_once '../utils/DBConnectionUtil.php'; 
     $qr_hp = "SELECT id, ten_hp FROM hoc_phan";
     $list_hp = $mysqli->query($qr_hp);
 
@@ -13,7 +22,7 @@
 <html lang="en">
 <head>
 <title>Thêm lịch</title>
-<link rel="stylesheet" href="./css/login.css">
+<link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
 <form action="xu_ly_them_lich.php" method="post">
