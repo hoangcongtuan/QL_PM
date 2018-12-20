@@ -1,8 +1,8 @@
-`<?php
+<?php
 	ob_start();
 	session_start();
 	require_once   'DBConnectionUtil.php'; 
-    // require_once  'Check_Login.php';
+	// require_once  'Check_Login.php';
 ?>
 <!doctype html>
 <html lang="en">
@@ -80,7 +80,7 @@
 		<nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="xem_lich_phong_may.php">Lịch phòng máy</a>
+                    <a class="navbar-brand" href="xem_lich_phong_may.php">Phòng máy</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -94,15 +94,12 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <form action = "" method = "get">
-                                <input type = "text" name = "keywords" placeholder = "enter your text">
+                                <input type = "text" name = "keyword" placeholder = "enter your text">
                                 <input type = "submit" value ="search">
                                 <select name = "field">
-                                
-                                    <option value = "ten_hp">Lớp học phần</option> 
-                                    <option value = "ten_phong">phòng máy</option>
-                                    <option value = "tieu_de">Nội dung</option>
-                                    <option value = "ho_ten">Giáo viên</option>
-                                    <option value = "ghi_chu">Ghi chú</ option>  
+                                    <option value = "ten_phong">Tên phòng</option> 
+                                    <option value = "so_may">Số máy</option>
+                                    <option value = "ghi_chu">Ghi chú</option>
                                 </select>
                             </form>
                         </li>
@@ -111,74 +108,49 @@
             </div>
         </nav>
         
-        <a href="them_lich.php" class="addtop"><img src="templates/admin//assets/img/add.png" alt="" /> Thêm Lịch</a>
+        <a href="them_phong_may.php" class="addtop"><img src="templates/admin//assets/img/add.png" alt="" /> Thêm Phòng máy</a>
 
         <div class="content">
         <table class="table table-striped">
                                     <thead>
                                         <th>ID</th>
-                                    	<th>Lớp học phần</th>
-                                    	<th>Phòng máy</th>
-                                        <th>Nội dung</th>
-                                        <th>Giáo viên</th>
-                                        <th>Bắt đầu</th>
-                                        <th>Kết thúc</th>
-                                        <th>Ghi Chú</th>
+                                    	<th>Tên phòng</th>
+                                    	<th>Số máy</th>
+                                        <th>Ghi chú</th>
                                         <th>Sửa</th>
                                         <th>Xóa</th>
                                     </thead>
                                     <tbody class="danhsach">
                                         <?php
-                                             if (isset($_GET['keywords'])) {
-
+                                            if (isset($_GET['keyword'])) {
+                                                $keyword = $_GET['keyword'];
+                                                $field = $_GET['field'];
                                                 $query = 
-                                                    "SELECT lich_phong_may.id, hoc_phan.ten_hp, phong_may.ten_phong, 
-                                                        tieu_de, giao_vien.ho_ten, thoi_gian_bat_dau, thoi_gian_ket_thuc, lich_phong_may.ghi_chu
-                                                    FROM lich_phong_may 
-                                                    INNER JOIN hoc_phan
-                                                        ON id_hp = hoc_phan.id
-                                                    INNER JOIN phong_may
-                                                        ON id_pm = phong_may.id
-                                                    INNER JOIN giao_vien
-                                                        ON id_gv = giao_vien.id
-                                                    WHERE $field like '%{$keyword}%'
-                                                    ORDER BY lich_phong_may.id";
+                                                    "SELECT *
+                                                    FROM phong_may
+                                                    WHERE $field like '%{$keyword}%'  
+                                                    ORDER BY id";
                                             }
                                             else 
                                                 $query =
-                                                    "SELECT lich_phong_may.id, hoc_phan.ten_hp, phong_may.ten_phong, 
-                                                        tieu_de, giao_vien.ho_ten, thoi_gian_bat_dau, thoi_gian_ket_thuc, lich_phong_may.ghi_chu
-                                                    FROM lich_phong_may 
-                                                    INNER JOIN hoc_phan
-                                                        ON id_hp = hoc_phan.id
-                                                    INNER JOIN phong_may
-                                                        ON id_pm = phong_may.id
-                                                    INNER JOIN giao_vien
-                                                        ON id_gv = giao_vien.id
-                                                    ORDER BY lich_phong_may.id";
+                                                    "SELECT *
+                                                    FROM phong_may
+                                                    ORDER BY id";;
 										
 										$rs= $mysqli->query($query);
 										while ($item=mysqli_fetch_assoc($rs)){
                                             $id=$item['id'];
-                                            $hp = $item['ten_hp'];
-                                            $pm = $item['ten_phong'];
-                                            $tieu_de = $item['tieu_de'];
-                                            $gv = $item['ho_ten'];
-                                            $start = $item['thoi_gian_bat_dau'];
-                                            $end = $item['thoi_gian_ket_thuc'];
+                                            $tp = $item['ten_phong'];
+                                            $sm = $item['so_may'];
                                             $ghi_chu = $item['ghi_chu'];
 								        ?>
                                         <tr>
                                         	<td><?php echo $id?></td>
-                                        	<td><?php echo $hp?></td>
-                                            <td><?php echo $pm?></td>
-                                            <td><?php echo $tieu_de?></td>
-                                            <td><?php echo $gv?></td>
-                                            <td><?php echo $start?></td>
-                                            <td><?php echo $end?></td>
+                                        	<td><?php echo $tp?></td>
+                                            <td><?php echo $sm?></td>
                                             <td><?php echo $ghi_chu?></td>
-                                            <td><a href="cap_nhat_lich.php?id=<?php echo $id?>">Sửa</a></td>
-                                            <td><a href="xu_ly_xoa_lich.php?id=<?php echo $id?>">Xóa</a></td>
+                                            <td><a href="cap_nhat_pm.php?id=<?php echo $id?>">Sửa</a></td>
+                                            <td><a href="xu_ly_xoa_pm.php?id=<?php echo $id?>">Xóa</a></td>
                                         </tr>
                                     <?php }?>
                                     </tbody>
